@@ -18,7 +18,7 @@ const employees = [
   {
     id: 2,
     name: 'Jack',
-    status: 'Working',
+    status: 'OnVacation',
   },
   {
     id: 3,
@@ -28,7 +28,7 @@ const employees = [
   {
     id: 4,
     name: 'Eitan',
-    status: 'Working',
+    status: 'BusinessTrip',
   },
 ];
 

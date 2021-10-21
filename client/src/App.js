@@ -4,10 +4,25 @@ import Employees from './components/Employees';
 
 function App() {
   const [employees, setEmployees] = React.useState(null);
-  //const [images, setImages] = React.useState(null);
   const hasImages = (workers) =>
     workers?.length &&
     workers.length === workers.filter((worker) => worker.img).length;
+
+  const handleStatusChange = (id, e) => {
+    (async () => {
+      const rawResponse = await fetch(`/users/${id}`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: e.target.value }),
+      });
+      const content = await rawResponse.json();
+
+      console.log(content);
+    })();
+  };
   React.useEffect(() => {
     fetch('/users')
       .then((res) => res.json())
@@ -16,7 +31,6 @@ function App() {
   React.useEffect(() => {
     if (!employees) return;
     console.log('employees: ', employees);
-    // console.log('images: ', images);
     if (hasImages(employees)) return;
 
     fetch(`https://randomuser.me/api/?results=${employees.length}`)
@@ -31,46 +45,6 @@ function App() {
       )
       .catch((err) => setEmployees(err));
   }, [employees]);
-  // React.useEffect(() => {
-  //   if (!data) return;
-  //   console.log('data: ', data);
-  //   console.log('images: ', images);
-  //   if (images?.length > 0 && data.length === images?.length) return;
-  //   fetch(`https://randomuser.me/api/?results=${data.length}`)
-  //     .then((res) => res.json())
-  //     .then((res) => setImages(res.results.map((item) => item.picture.large)));
-  // }, [data, images]);
-
-  // React.useEffect(() => {
-  //   fetch('/users')
-  //     .then((res) => res.json())
-  //     // .then((data) => {
-  //     //   //setData(data);
-  //     //   return data;
-  //     // })
-  //     .then((data) =>
-  //       fetch(`https://randomuser.me/api/?results=${data.length}`)
-  //         .then((res) => res.json())
-  //         //.then((res) => setData(res.results.map((item) => item.picture.large)))
-  //         .then((res) => {
-  //           data = data.map(
-  //             (item, i) => (item.img = res.results[i].picture.large)
-  //           );
-  //           setData(data);
-  //         })
-  //     )
-
-  //     .catch((err) => setData(err));
-  // }, []);
-  // React.useEffect(() => {
-  //   if (!data) return;
-  //   console.log('data: ', data);
-  //   console.log('images: ', images);
-  //   if (images?.length > 0 && data.length === images?.length) return;
-  //   fetch(`https://randomuser.me/api/?results=${data.length}`)
-  //     .then((res) => res.json())
-  //     .then((res) => setImages(res.results.map((item) => item.picture.large)));
-  // }, [data, images]);
 
   return (
     <div className='App'>
@@ -79,7 +53,10 @@ function App() {
         {!hasImages(employees) ? (
           'Loading...'
         ) : (
-          <Employees employees={employees} />
+          <Employees
+            employees={employees}
+            handleStatusChange={handleStatusChange}
+          />
         )}
       </div>
     </div>
